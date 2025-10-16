@@ -7,19 +7,21 @@ fn main() {
     println!("TikTok Video Encoding Fixer");
     println!("========================");
     
-    let input_file = get_input("Enter input file name (e.g., input.mp4): ");
-    
-    if !Path::new(&input_file).exists() {
+    let input_file = loop {
+       let  input_file = get_input("Enter input file name (e.g., input.mp4): ");
+        if Path::new(&input_file).exists() {
+            break input_file;
+        }
         eprintln!("Error: Input file '{}' does not exist in the current directory.", input_file);
-        std::process::exit(1);
-    }
+    };
     
-    let output_file = get_input("Enter output file name (e.g., output.mp4): ");
-    
-    if Path::new(&output_file).exists() {
+    let output_file = loop {
+        let output_file = get_input("Enter output file name (e.g., output.mp4): ");
+        if !Path::new(&output_file).exists() {
+            break output_file;
+        }
         eprintln!("Error: Output file '{}' already exists. Please choose a different name.", output_file);
-        std::process::exit(1);
-    }
+    };
     
     let ffmpeg_path = get_ffmpeg();
     
