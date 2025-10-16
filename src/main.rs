@@ -21,10 +21,8 @@ fn main() {
         std::process::exit(1);
     }
     
-    // Get or download FFmpeg
-    let ffmpeg_path = get_ffmpeg_path();
+    let ffmpeg_path = get_ffmpeg();
     
-    // Execute FFmpeg command
     let result = Command::new(&ffmpeg_path)
         .arg("-i")
         .arg(&input_file)
@@ -43,7 +41,7 @@ fn main() {
             }
         }
         Err(e) => {
-            eprintln!("✗ Error executing FFmpeg: {}", e);
+            eprintln!("Error executing FFmpeg: {}", e);
             std::process::exit(1);
         }
     }
@@ -53,7 +51,7 @@ fn main() {
     io::stdin().read_line(&mut String::new()).unwrap();
 }
 
-fn get_ffmpeg_path() -> PathBuf {
+fn get_ffmpeg() -> PathBuf {
     // Get the directory where the executable is located
     let exe_dir = std::env::current_exe()
         .ok()
@@ -70,8 +68,8 @@ fn get_ffmpeg_path() -> PathBuf {
     let vendor_dir = exe_dir.join("vendor").join("ffmpeg");
     let ffmpeg_path = vendor_dir.join(ffmpeg_file_name);
     
+    // If ffmpeg already exists locally, then return the path immediately.
     if ffmpeg_path.exists() {
-        println!("Using existing FFmpeg installation.");
         return ffmpeg_path;
     }
     
@@ -94,16 +92,14 @@ fn get_ffmpeg_path() -> PathBuf {
         std::process::exit(1);
     }
     
-    println!("FFmpeg downloaded successfully!");
+    println!("FFmpeg downloaded successfully.");
     ffmpeg_path
 }
 
 fn download_ffmpeg(vendor_dir: &Path) -> Result<(), Box<dyn std::error::Error>> {
     let (download_url, is_zip) = if cfg!(target_os = "windows") {
-        // FFmpeg Windows essentials build
         ("https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip", true)
     } else if cfg!(target_os = "linux") {
-        // FFmpeg Linux static build
         ("https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz", false)
     } else {
         return Err("Unsupported operating system".into());
@@ -112,7 +108,6 @@ fn download_ffmpeg(vendor_dir: &Path) -> Result<(), Box<dyn std::error::Error>> 
     println!("Downloading from: {}", download_url);
     println!("This may take a few minutes...");
     
-    // Download the archive
     let response = reqwest::blocking::get(download_url)?;
     let bytes = response.bytes()?;
     
@@ -120,11 +115,9 @@ fn download_ffmpeg(vendor_dir: &Path) -> Result<(), Box<dyn std::error::Error>> 
     let temp_file = vendor_dir.join("ffmpeg_download.tmp");
     fs::write(&temp_file, &bytes)?;
     
-    // Extract based on archive type
     if is_zip {
         extract_zip(&temp_file, vendor_dir)?;
     } else {
-        // For Linux tar.xz, we'll need to shell out to tar command
         extract_tar_xz(&temp_file, vendor_dir)?;
     }
     
@@ -143,8 +136,7 @@ fn extract_zip(zip_path: &Path, dest_dir: &Path) -> Result<(), Box<dyn std::erro
         let mut file = archive.by_index(i)?;
         let file_path = file.name();
         
-        // Look for ffmpeg.exe in bin directory
-        if file_path.ends_with("bin/ffmpeg.exe") || file_path.ends_with("ffmpeg.exe") {
+        if file_path.ends_with("ffmpeg.exe") {
             let output_path = dest_dir.join("ffmpeg.exe");
             let mut output_file = fs::File::create(output_path)?;
             io::copy(&mut file, &mut output_file)?;
@@ -171,7 +163,7 @@ fn extract_tar_xz(tar_path: &Path, dest_dir: &Path) -> Result<(), Box<dyn std::e
         return Err("Failed to extract tar.xz archive".into());
     }
     
-    // Make ffmpeg executable on Linux
+    // Make FFmpeg executable
     #[cfg(target_family = "unix")]
     {
         use std::os::unix::fs::PermissionsExt;
