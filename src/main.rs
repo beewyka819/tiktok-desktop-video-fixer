@@ -48,7 +48,7 @@ fn main() {
         }
     }
 
-    println!("\nVideo fixed successfully!");
+    println!("\nVideo processed successfully.");
     println!("Press Enter to exit...");
     io::stdin().read_line(&mut String::new()).unwrap();
 }
