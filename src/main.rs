@@ -39,11 +39,15 @@ fn main() {
         Ok(exit_status) => {
             if !exit_status.success() {
                 eprintln!("FFmpeg failed with exit code: {:?}", exit_status.code());
+                println!("Press Enter to exit...");
+                io::stdin().read_line(&mut String::new()).unwrap();
                 std::process::exit(1);
             }
         }
         Err(e) => {
             eprintln!("Error executing FFmpeg: {}", e);
+            println!("Press Enter to exit...");
+            io::stdin().read_line(&mut String::new()).unwrap();
             std::process::exit(1);
         }
     }
@@ -80,17 +84,23 @@ fn get_ffmpeg() -> PathBuf {
     // Create vendor directory if it doesn't exist
     if let Err(e) = fs::create_dir_all(&vendor_dir) {
         eprintln!("Error: Failed to create vendor directory: {}", e);
+        println!("Press Enter to exit...");
+        io::stdin().read_line(&mut String::new()).unwrap();
         std::process::exit(1);
     }
     
     // Download and extract FFmpeg
     if let Err(e) = download_ffmpeg(&vendor_dir) {
         eprintln!("Error: Failed to download FFmpeg: {}", e);
+        println!("Press Enter to exit...");
+        io::stdin().read_line(&mut String::new()).unwrap();
         std::process::exit(1);
     }
     
     if !ffmpeg_path.exists() {
         eprintln!("Error: FFmpeg executable not found after download.");
+        println!("Press Enter to exit...");
+        io::stdin().read_line(&mut String::new()).unwrap();
         std::process::exit(1);
     }
     
