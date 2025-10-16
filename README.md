@@ -1,8 +1,5 @@
 # tiktok-desktop-video-fixer (tdvf)
 Fixes issues with certain tiktoks where the video and audio playback are broken on desktop.
-## Authors
-- **Patrick Sullivan** - [beewyka819](https://github.com/beewyka819)
-
 ## Getting Started
 These instructions will get tdvf up and running on your local machine.
 ### Installing
@@ -22,3 +19,5 @@ This work is dual-licensed under [MIT](https://mit-license.org/) and [Apache 2.0
 You can choose between one of them if you use this work.
 
 `SPDX-License-Identifier: MIT OR Apache-2.0`
+## Authors
+- **Patrick Sullivan** - [beewyka819](https://github.com/beewyka819)
