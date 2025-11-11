@@ -1,4 +1,4 @@
-# tiktok-desktop-video-fixer (tdvf)
+# Tiktok Desktop Video Fixer (tdvf)
 Fixes issues with certain tiktoks where the video and audio playback are broken on desktop.
 
 Specifically, many tiktoks play at seemingly half speed on desktop (though audio is unaffected, but loops midway through). Notably, mobile playback is unaffected. I suspect this is some kind of strange encoding issue. Upon downloading the mp4, one will find that the audio is then also messed up on local playback. Simply throwing the video into an editor and speeding it up 2x will not fix the problem. This utility however fixes this playback issue with some FFmpeg magic.
