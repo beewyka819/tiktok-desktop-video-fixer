@@ -14,6 +14,7 @@ Using tdvf is very straightforward.
 1. Start by running the executable.
 2. In the new window, enter the input file name you wish to fix. The file must exist in the same directory the exe is in.
 3. Enter the desired output file name. This file will be created in the same directory as the exe.
+4. Enter a desired scaling factor. This determines how much to alter the time between frames. For example, a factor of 0.5 will halve the time between frames, and thus speeding up the video by 2x. Most problematic videos tend to just require a factor of 0.5, but I have seen some that need 0.25 for a 4x speedup before.
 
 You can optionally add tdvf to your PATH, allowing you to run it via the commandline from any directory, in which case the input and output files will be relative to the directory your commandline is in, rather than the tdvf directory. At this time tdvf does not support commandline arguments, so the inputs must still be provided manually.
 
