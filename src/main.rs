@@ -5,6 +5,8 @@ use std::process::Command;
 
 fn main() {
     println!("TikTok Video Encoding Fixer");
+    println!("This tool is meant to fix encoding issues that cause tiktoks videos to play too slowly on PC,");
+    println!("in addition to fixing choppy audio that can occur after downloading them.");
     println!("========================");
 
     let input_file = loop {
@@ -28,14 +30,37 @@ fn main() {
             output_file
         );
     };
+    
+    let scale_factor = loop {
+        let selection = get_input("What factor do you want to apply to the video frame times? (0.5 for a 2x speedup, 0.25 for a 4x speedup, etc.)\n(a) 0.5\n(b) 0.25\n(c) Custom Factor\nEnter selection: ");
+        
+        match selection.to_lowercase().as_str() {
+            "a" => break "0.5".to_string(),
+            "b" => break "0.25".to_string(),
+            "c" => {
+                let factor = loop {
+                    let factor_input = get_input("Enter custom factor: ");
+                    if factor_input.parse::<f64>().is_ok() {
+                        break factor_input;
+                    }
+                    println!("Error: Custom factor must be a valid number (i.e. 0.1, 0.5, 1.0, 2.0, etc.)");
+                };
+                break factor;
+            },
+            _ => {
+                println!("Invalid input. You must select either a, b, or c");
+            }
+        }
+    };
 
     let ffmpeg_path = get_ffmpeg();
 
+    let scale_arg = format!("setpts={}*PTS", scale_factor);
     let result = Command::new(&ffmpeg_path)
         .arg("-i")
         .arg(&input_file)
         .arg("-vf")
-        .arg("setpts=0.5*PTS")
+        .arg(&scale_arg)
         .arg("-af")
         .arg("atempo=1.0")
         .arg(&output_file)
